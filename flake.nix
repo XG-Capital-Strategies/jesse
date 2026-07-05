@@ -20,7 +20,7 @@
     };
   };
 
-  outputs = { nixpkgs, pyproject-nix, uv2nix, pyproject-build-systems, ... }:
+  outputs = { self, nixpkgs, pyproject-nix, uv2nix, pyproject-build-systems, ... }:
     let
       inherit (nixpkgs) lib;
       forAllSystems = lib.genAttrs [ "x86_64-linux" "aarch64-linux" "x86_64-darwin" "aarch64-darwin" ];
@@ -63,6 +63,11 @@
           program = "${(pythonSetFor system).mkVirtualEnv "jesse-env" workspace.deps.default}/bin/jesse";
         };
       });
+
+      nixosModules.default = { pkgs, lib, ... }: {
+        imports = [ ./nix/module.nix ];
+        services.jesse.package = lib.mkDefault self.packages.${pkgs.stdenv.hostPlatform.system}.jesse;
+      };
 
       devShells = forAllSystems (system:
         let pkgs = nixpkgs.legacyPackages.${system};
