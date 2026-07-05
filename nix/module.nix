@@ -80,6 +80,18 @@ in
       };
     };
 
+    strategiesDir = lib.mkOption {
+      type = lib.types.nullOr lib.types.path;
+      default = null;
+      example = "/srv/jesse-strategies";
+      description = ''
+        Directory holding the strategies. Symlinked into the project dir as
+        `strategies`. Must be readable by the `jesse` user; may be a nix
+        store path (e.g. a flake input) for immutable deploys. When null, a
+        plain writable directory is created at /var/lib/jesse/strategies.
+      '';
+    };
+
     extraEnv = lib.mkOption {
       type = lib.types.attrsOf lib.types.str;
       default = { };
@@ -127,7 +139,14 @@ in
       environment.HOME = "/var/lib/jesse";
 
       preStart = ''
-        mkdir -p strategies storage
+        mkdir -p storage
+        ${if cfg.strategiesDir != null then ''
+          if [ -d strategies ] && [ ! -L strategies ]; then
+            echo "refusing to replace real directory /var/lib/jesse/strategies with a symlink to ${cfg.strategiesDir}; move its contents first" >&2
+            exit 1
+          fi
+          ln -sfn ${cfg.strategiesDir} strategies
+        '' else "mkdir -p strategies"}
         umask 077
         {
           echo "PASSWORD=$(cat "$CREDENTIALS_DIRECTORY/password")"
