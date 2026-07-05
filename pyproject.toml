@@ -1,0 +1,41 @@
+[build-system]
+requires = ["setuptools>=69"]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "jesse"
+description = "A trading framework for cryptocurrencies"
+readme = "README.md"
+requires-python = ">=3.10,<3.14"
+license = { text = "MIT" }
+authors = [{ name = "Saleh Mir", email = "saleh@jesse.trade" }]
+dynamic = ["version", "dependencies"]
+
+[project.urls]
+Homepage = "https://jesse.trade"
+Documentation = "https://docs.jesse.trade"
+Source = "https://github.com/jesse-ai/jesse"
+Tracker = "https://github.com/jesse-ai/jesse/issues"
+
+[project.scripts]
+jesse = "jesse.__init__:cli"
+
+[tool.setuptools]
+include-package-data = true
+
+[tool.setuptools.packages.find]
+include = ["jesse*"]
+
+[tool.setuptools.package-data]
+"*" = ["*.dll", "*.dylib", "*.so", "*.json"]
+
+[tool.setuptools.dynamic]
+version = { attr = "jesse.version.__version__" }
+dependencies = { file = "requirements.txt" }
+
+[tool.uv]
+# ponytail: ray/jesse-rust ship wheels only for these platforms; widen if needed
+environments = [
+    "sys_platform == 'linux'",
+    "sys_platform == 'darwin'",
+]
