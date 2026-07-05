@@ -30,6 +30,14 @@
       # Prefer PyPI wheels: ray and jesse-rust are impractical to build from source.
       overlay = workspace.mkPyprojectOverlay { sourcePreference = "wheel"; };
 
+      # sdist-only packages that don't declare their setuptools build dependency
+      buildFixups = final: prev:
+        lib.genAttrs [ "peewee" "simplejson" "starkbank-ecdsa" "timeloop" ] (name:
+          prev.${name}.overrideAttrs (old: {
+            nativeBuildInputs = (old.nativeBuildInputs or [ ])
+              ++ final.resolveBuildSystem { setuptools = [ ]; };
+          }));
+
       pythonSetFor = system:
         let
           pkgs = nixpkgs.legacyPackages.${system};
@@ -39,6 +47,7 @@
           lib.composeManyExtensions [
             pyproject-build-systems.overlays.default
             overlay
+            buildFixups
           ]
         );
     in
