@@ -1001,7 +1001,6 @@ dependencies = [
     { name = "psycopg2-binary" },
     { name = "pydash" },
     { name = "pyjwt" },
-    { name = "pytest" },
     { name = "python-dotenv" },
     { name = "ray" },
     { name = "redis" },
@@ -1018,6 +1017,11 @@ dependencies = [
     { name = "websocket-client" },
     { name = "websockets" },
     { name = "wsaccel" },
+]
+
+[package.dev-dependencies]
+dev = [
+    { name = "pytest" },
 ]
 
 [package.metadata]
@@ -1044,7 +1048,6 @@ requires-dist = [
     { name = "psycopg2-binary", specifier = "~=2.9.9" },
     { name = "pydash", specifier = "~=6.0.0" },
     { name = "pyjwt", specifier = "~=2.11.0" },
-    { name = "pytest", specifier = "~=6.2.5" },
     { name = "python-dotenv", specifier = "~=1.2.1" },
     { name = "ray" },
     { name = "redis", specifier = "~=4.1.4" },
@@ -1062,6 +1065,9 @@ requires-dist = [
     { name = "websockets", specifier = ">=10.0.0" },
     { name = "wsaccel", specifier = "~=0.6.6" },
 ]
+
+[package.metadata.requires-dev]
+dev = [{ name = "pytest", specifier = "~=6.2.5" }]
 
 [[package]]
 name = "jesse-rust"

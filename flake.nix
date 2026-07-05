@@ -69,7 +69,7 @@
         in {
           default = pkgs.mkShell {
             packages = [
-              ((pythonSetFor system).mkVirtualEnv "jesse-dev-env" workspace.deps.default)
+              ((pythonSetFor system).mkVirtualEnv "jesse-dev-env" workspace.deps.all)
               pkgs.uv
             ];
             env.UV_NO_SYNC = "1";
