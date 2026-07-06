@@ -55,6 +55,9 @@
       packages = forAllSystems (system: rec {
         default = jesse;
         jesse = (pythonSetFor system).mkVirtualEnv "jesse-env" workspace.deps.default;
+        # Full env incl. dev deps (pytest, …) — for downstream flakes that run
+        # their own test suites against jesse (e.g. the engine's research shell).
+        jesse-dev = (pythonSetFor system).mkVirtualEnv "jesse-dev-env" workspace.deps.all;
       });
 
       apps = forAllSystems (system: {
