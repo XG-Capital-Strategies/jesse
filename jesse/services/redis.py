@@ -1,4 +1,3 @@
-import aioredis
 import redis as sync_redis_lib
 import simplejson as json
 import asyncio
@@ -10,6 +9,11 @@ from jesse.services.env import ENV_VALUES
 
 
 async def init_redis():
+    # Lazy: aioredis is only needed by the live/GUI event bus. Research-mode
+    # consumers (jesse.research.backtest) import this module without ever
+    # connecting, and aioredis is deprecated/absent in some environments.
+    import aioredis
+
     return await aioredis.create_redis_pool(
         address=(ENV_VALUES['REDIS_HOST'], ENV_VALUES['REDIS_PORT']),
         password=ENV_VALUES['REDIS_PASSWORD'] or None,
