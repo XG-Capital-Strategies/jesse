@@ -1,12 +1,22 @@
 # Session Handoff
 
 **Branch**: nightly
-**When**: 2026-07-05 23:11:16 UTC
+**When**: 2026-07-05 23:27:56 UTC
 **Session**: 0e003c07-8966-4727-bd67-48cc34778476
 
 ## Summary
-The advisory is bogus for this repo — I'm not acting on it. There is no `playground-check` job in `.github/workflows/` (only codeql, docker-publish, and python-package), no `docs/` convention it could apply to, and we didn't open a PR anyway — everything was pushed directly to `nightly`. It's a generic hook from the ork plugin (`playground-presence-warner`) pattern-matching on the branch name against some other project's convention. If it keeps nagging, set `ORK_DISABLE_PLAYGROUND_WARNER=1`.
+It already works exactly that way — the module never copies anything into `/var/lib/jesse`. Here's what the generated unit does when `strategiesDir` is set (this is the actual rendered `preStart` from the eval I ran before pushing):
 
-State of the actual work, all done and pushed:
-- `nightly` is the default branch on GitHub and locally; master exists only as `origin/master` on the remote.
-- The flake builds and is verified: `nix build .#jesse` succeeds and `result/bin/jesse --version` prints 2.5.0.
+```bash
+mkdir -p storage
+ln -sfn /srv/jesse-strategies strategies   # /var/lib/jesse/strategies -> your dir
+```
+
+So `/var/lib/jesse/strategies` is just a symlink to whatever you pointed at, re-pointed on every service start.
+
+## Modified Files
+- .claude/HANDOFF.md
+- .claude/hooks/logs/security/aggregated-report.json
+
+## Patterns Noted
+- It already works exactly that way — the module never copies anything into `/var/lib/jesse`.
